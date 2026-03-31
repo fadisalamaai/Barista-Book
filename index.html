@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>كتاب وصفات البريستا</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0b08;
+    --surface: #1a1410;
+    --card: #1e1710;
+    --border: #2e241a;
+    --accent: #c8843a;
+    --accent2: #e8a85a;
+    --cream: #f5ead8;
+    --muted: #7a6a55;
+    --text: #ede0cc;
+    --red: #c0392b;
+    --green: #27ae60;
+    --r: 16px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+
+  /* ══════════ HEADER ══════════ */
+  .header {
+    background: linear-gradient(180deg,#1a1410 0%,transparent 100%);
+    padding: 52px 18px 18px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--cream);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  .logo span { color: var(--accent); }
+  .sub { font-size: 11px; color: var(--muted); letter-spacing: 2px; margin-bottom: 16px; }
+
+  .btn-add {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 42px; height: 42px;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 18px rgba(200,132,58,.45);
+    flex-shrink: 0;
+    transition: transform .15s;
+  }
+  .btn-add:active { transform: scale(.92); }
+
+  /* SEARCH */
+  .search-wrap { position: relative; margin-bottom: 14px; }
+  .search-wrap input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 42px 12px 16px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    outline: none;
+    direction: rtl;
+    transition: border-color .2s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px; color: var(--muted);
+  }
+
+  /* CATEGORY TABS */
+  .cats {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    flex-direction: row-reverse;
+  }
+  .cats::-webkit-scrollbar { display: none; }
+  .cat-btn {
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .cat-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(200,132,58,.4);
+  }
+
+  /* ══════════ CONTENT ══════════ */
+  .content { padding: 14px 14px 110px; }
+  .section-label {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .count-pill {
+    background: var(--border);
+    color: var(--muted);
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 11px;
+  }
+
+  /* ══════════ RECIPE CARDS ══════════ */
+  .recipe-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .recipe-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+    position: relative;
+  }
+  .recipe-card:active { transform: scale(.97); }
+  .recipe-card.wide {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: stretch;
+    min-height: 140px;
+  }
+
+  /* Image area */
+  .card-visual {
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .recipe-card:not(.wide) .card-visual {
+    width: 100%;
+    aspect-ratio: 1;
+  }
+  .recipe-card.wide .card-visual {
+    width: 42%;
+    aspect-ratio: unset;
+  }
+  .card-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 3;
+    transition: transform 0.3s ease;
+  }
+  .recipe-card:hover .card-img {
+    transform: scale(1.08);
+  }
+  .card-bg {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .card-emoji {
+    font-size: 52px;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.4));
+    z-index: 2;
+    position: relative;
+  }
+  .recipe-card.wide .card-emoji { font-size: 58px; }
+
+  /* Orb / glow effect inside card */
+  .card-orb {
+    position: absolute;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    filter: blur(30px);
+    opacity: .55;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Card info */
+  .card-info {
+    padding: 10px 12px 13px;
+  }
+  .recipe-card.wide .card-info {
+    padding: 14px 14px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .cat-pill {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    padding: 3px 9px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .card-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .recipe-card.wide .card-name { font-size: 17px; }
+  .card-meta {
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .card-meta span { display: flex; align-items: center; gap: 3px; }
+
+  /* pill colours */
+  .pill-hot       { background:rgba(231,76,60,.15);  color:#e74c3c; }
+  .pill-cold      { background:rgba(52,152,219,.15); color:#3498db; }
+  .pill-smoothie  { background:rgba(155,89,182,.15); color:#9b59b6; }
+  .pill-milkshake { background:rgba(233,30,140,.15); color:#e91e8c; }
+  .pill-juice     { background:rgba(243,156,18,.15); color:#f39c12; }
+  .pill-dessert   { background:rgba(121,85,72,.15);  color:#a1887f; }
+
+  /* ══════════ DETAIL VIEW ══════════ */
+  .detail-view {
+    position: fixed;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: var(--bg);
+    z-index: 200;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    max-width: 430px;
+    margin: 0 auto;
+    direction: rtl;
+  }
+  .detail-view.open { transform: translateX(0); }
+
+  .detail-hero {
+    position: relative;
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .detail-hero-bg {
+    position: absolute;
+    inset: 0;
+  }
+  .detail-hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+  .detail-hero-emoji {
+    font-size: 90px;
+    z-index: 2;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,.5));
+    position: relative;
+  }
+  .detail-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 30%, var(--bg) 100%);
+    z-index: 3;
+  }
+  .detail-back {
+    position: absolute;
+    top: 52px; left: 16px;
+    background: rgba(0,0,0,.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.1);
+    color: var(--cream);
+    border-radius: 50%;
+    width: 42px; height: 42px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+  }
+  .detail-edit-btn {
+    position: absolute;
+    top: 52px; right: 16px;
+    background: rgba(0,0,0,.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.1);
+    color: var(--cream);
+    border-radius: 50%;
+    width: 42px; height: 42px;
+    font-size: 17px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+  }
+
+  .detail-body {
+    padding: 0 20px 100px;
+    margin-top: -30px;
+    position: relative;
+    z-index: 5;
+  }
+  .detail-cat { margin-bottom: 10px; }
+  .detail-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--cream);
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .detail-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 22px;
+    font-weight: 400;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 8px;
+    text-align: center;
+  }
+  .stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent2);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-lbl { font-size: 11px; color: var(--muted); }
+
+  .sec-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sec-title::before { content:''; flex:1; height:1px; background:var(--border); }
+
+  .ing-list { list-style:none; margin-bottom:26px; }
+  .ing-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--surface);
+    border-radius: 12px;
+    margin-bottom: 7px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .ing-name { color: var(--cream); font-weight: 500; }
+  .ing-qty { color: var(--accent2); font-weight: 600; font-size: 13px; }
+
+  .steps-list { list-style:none; margin-bottom:26px; }
+  .step-item {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .step-item:not(:last-child)::after {
+    content:'';
+    position: absolute;
+    right: 19px; top: 40px;
+    width: 2px;
+    height: calc(100% - 8px);
+    background: var(--border);
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px; color: #fff;
+    box-shadow: 0 4px 12px rgba(200,132,58,.35);
+  }
+  .step-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.75;
+    padding-top: 8px;
+    flex: 1;
+    font-weight: 400;
+  }
+
+  .note-box {
+    background: rgba(200,132,58,.09);
+    border: 1px solid rgba(200,132,58,.3);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--accent2);
+    line-height: 1.75;
+    font-weight: 400;
+  }
+  .note-box strong { display:block; margin-bottom:4px; color:var(--accent); font-size:14px; }
+
+  /* ══════════ MODAL ══════════ */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.85);
+    z-index: 300;
+    display: none;
+    align-items: flex-end;
+    backdrop-filter: blur(6px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-sheet {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-radius: 26px 26px 0 0;
+    padding: 18px 20px 50px;
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    animation: slideUp .3s ease;
+    direction: rtl;
+  }
+  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+  .modal-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--cream);
+    margin-bottom: 20px;
+  }
+  .form-group { margin-bottom: 15px; }
+  .form-label {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+  }
+  .form-control {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    outline: none;
+    direction: rtl;
+    resize: vertical;
+    transition: border-color .2s;
+    font-weight: 400;
+  }
+  .form-control:focus { border-color: var(--accent); }
+  select.form-control { appearance: none; }
+  .row2 { display:flex; gap:10px; }
+  .row2 .form-group { flex:1; }
+
+  .ing-row {
+    display: flex; gap: 8px; margin-bottom: 8px; align-items: center;
+  }
+  .ing-row .form-control { flex:1; }
+  .btn-rm {
+    background: rgba(192,57,43,.15);
+    border: none; color: var(--red);
+    border-radius: 8px;
+    width: 36px; height: 36px;
+    cursor: pointer; font-size: 17px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-add-row {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    border-radius: 11px;
+    padding: 10px;
+    width: 100%;
+    font-size: 13px;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all .2s;
+  }
+  .btn-add-row:active { border-color:var(--accent); color:var(--accent); }
+
+  .step-row { display:flex; gap:8px; margin-bottom:8px; align-items:flex-start; }
+  .step-num-sm {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items:center; justify-content:center;
+    font-size: 13px; font-weight: 800; color:#fff;
+    margin-top: 9px;
+  }
+
+  .btn-save {
+    width:100%; background:var(--accent); color:#fff;
+    border:none; border-radius:14px; padding:15px;
+    font-size:16px; font-family:'Cairo',sans-serif; font-weight:700;
+    cursor:pointer; margin-top:20px;
+    box-shadow: 0 8px 24px rgba(200,132,58,.4);
+    transition: opacity .15s;
+  }
+  .btn-save:active { opacity:.85; }
+  .btn-del {
+    width:100%; background:transparent;
+    color:var(--red); border:1px solid rgba(192,57,43,.3);
+    border-radius:14px; padding:13px;
+    font-size:14px; font-family:'Cairo',sans-serif; font-weight:600;
+    cursor:pointer; margin-top:10px;
+  }
+  .btn-cancel {
+    width:100%; background:transparent;
+    color:var(--muted); border:none;
+    padding:12px; font-size:14px;
+    font-family:'Cairo',sans-serif; cursor:pointer;
+    margin-top:5px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 88px; left:50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    border-radius: 14px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    opacity: 0;
+    transition: all .3s;
+    z-index: 400;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* EMPTY */
+  .empty-state {
+    grid-column:1/-1;
+    text-align:center; padding:60px 20px;
+    color: var(--muted);
+  }
+  .empty-state .ei { font-size:48px; margin-bottom:12px; }
+  .empty-state p { font-size:14px; line-height:1.7; font-weight:500; }
+
+  ::-webkit-scrollbar { width:0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div>
+      <div class="logo">كتاب <span>البريستا</span></div>
+      <div class="sub">مجموعة الوصفات الاحترافية</div>
+    </div>
+    <button class="btn-add" onclick="openAdd()" title="إضافة وصفة">+</button>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input id="searchInput" type="text" placeholder="ابحث عن وصفة..." oninput="renderCards()">
+  </div>
+  <div class="cats" id="catTabs"></div>
+</div>
+
+<div class="content">
+  <div class="section-label" id="secLabel">
+    جميع الوصفات <span class="count-pill" id="countPill">0</span>
+  </div>
+  <div class="recipe-grid" id="recipeGrid"></div>
+</div>
+
+<div class="detail-view" id="detailView">
+  <div class="detail-hero" id="dHero">
+    <div class="detail-hero-bg" id="dHeroBg"></div>
+    <img src="" class="detail-hero-img" id="dHeroImg" style="display:none;" alt="">
+    <div class="detail-hero-emoji" id="dHeroEmoji"></div>
+    <div class="detail-hero-overlay"></div>
+    <button class="detail-back" onclick="closeDetail()">→</button>
+    <button class="detail-edit-btn" onclick="editCurrent()">✏️</button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-cat"><span class="cat-pill" id="dCatPill"></span></div>
+    <div class="detail-title" id="dTitle"></div>
+    <div class="detail-desc" id="dDesc"></div>
+    <div class="stats-row" id="dStats"></div>
+    <div class="sec-title">المكوّنات</div>
+    <ul class="ing-list" id="dIngList"></ul>
+    <div class="sec-title">طريقة التحضير</div>
+    <ul class="steps-list" id="dStepsList"></ul>
+    <div class="note-box" id="dNote" style="display:none">
+      <strong>👨‍🍳 ملاحظة الشيف</strong>
+      <span id="dNoteText"></span>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">إضافة وصفة جديدة</div>
+
+    <div class="form-group">
+      <label class="form-label">اسم الوصفة</label>
+      <input class="form-control" id="fName" placeholder="مثال: قهوة لاتيه بالكراميل">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">التصنيف</label>
+      <select class="form-control" id="fCat">
+        <option value="hot">☕ مشروبات ساخنة</option>
+        <option value="cold">🧊 مشروبات باردة</option>
+        <option value="smoothie">🫐 سموذي</option>
+        <option value="milkshake">🥤 ميلك شيك</option>
+        <option value="juice">🍊 عصير طازج</option>
+        <option value="dessert">🧇 حلويات (وافل)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">وصف الوصفة</label>
+      <textarea class="form-control" id="fDesc" rows="2" placeholder="وصف مختصر..."></textarea>
+    </div>
+
+    <div class="row2">
+      <div class="form-group">
+        <label class="form-label">وقت التحضير (دقيقة)</label>
+        <input class="form-control" id="fPrep" type="number" placeholder="5">
+      </div>
+      <div class="form-group">
+        <label class="form-label">السعرات</label>
+        <input class="form-control" id="fCal" type="number" placeholder="200">
+      </div>
+      <div class="form-group">
+        <label class="form-label">الكميات</label>
+        <input class="form-control" id="fServ" type="number" placeholder="1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">المكوّنات</label>
+      <div id="ingList"></div>
+      <button class="btn-add-row" onclick="addIngRow()">+ أضف مكوّن</button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">خطوات التحضير</label>
+      <div id="stepList"></div>
+      <button class="btn-add-row" onclick="addStepRow()">+ أضف خطوة</button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">ملاحظة الشيف (اختياري)</label>
+      <textarea class="form-control" id="fNote" rows="2" placeholder="نصائح ومقترحات..."></textarea>
+    </div>
+
+    <button class="btn-save" onclick="saveRecipe()">💾 حفظ الوصفة</button>
+    <button class="btn-del" id="btnDel" style="display:none" onclick="deleteRecipe()">🗑 حذف الوصفة</button>
+    <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CATEGORIES
+// ═══════════════════════════════════════════════════════
+const CATS = [
+  { id:'all',        label:'الكل',           emoji:'✨', grad:['#2c1810','#1a1410'], orb:'#c8843a' },
+  { id:'hot',        label:'ساخن',           emoji:'☕', grad:['#2a0a00','#1a0500'], orb:'#e74c3c' },
+  { id:'cold',       label:'بارد',           emoji:'🧊', grad:['#001a2e','#000f1a'], orb:'#3498db' },
+  { id:'smoothie',   label:'سموذي',          emoji:'🫐', grad:['#1a0a2e','#0f0518'], orb:'#9b59b6' },
+  { id:'milkshake',  label:'ميلك شيك',       emoji:'🥤', grad:['#2a0018','#1a000e'], orb:'#e91e8c' },
+  { id:'juice',      label:'عصير طازج',      emoji:'🍊', grad:['#2a1800','#1a0e00'], orb:'#f39c12' },
+  { id:'dessert',    label:'حلويات (وافل)',  emoji:'🧇', grad:['#1a0e08','#0f0804'], orb:'#a1887f' },
+];
+const CAT_MAP = {};
+CATS.forEach(c => CAT_MAP[c.id] = c);
+
+// ═══════════════════════════════════════════════════════
+// DEFAULT DATA
+// ═══════════════════════════════════════════════════════
+const DEFAULT = [
+  {
+    id:1, cat:'hot', name:'إسبريسو كلاسيك',
+    desc:'جرعة قهوة مركّزة غنية بالنكهة، أساس كل مشروبات البار.',
+    prep:3, cal:5, servings:1, wide:true,
+    image:'https://image.pollinations.ai/prompt/professional%20espresso%20coffee%20shot%20in%20a%20small%20cup?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'بن مطحون ناعم',qty:'18 جرام'},
+      {name:'ماء مفلتر',qty:'36 مل'},
+      {name:'درجة حرارة الماء',qty:'93°م'},
+    ],
+    steps:[
+      'اطحن 18 جراماً من البن طحناً ناعماً مشابهاً لملح الطعام.',
+      'وزّع المسحوق في الـ portafilter واضغط بقوة 15-20 كجم.',
+      'ثبّت الـ portafilter في رأس المجموعة وابدأ الاستخراج فوراً.',
+      'استخرج لمدة 25-30 ثانية حتى تحصل على 36 مل.',
+      'قدّم فوراً في فنجان مدفّأ مسبقاً.',
+    ],
+    note:'الإسبريسو المثالي له كريما بنية اللون. إذا جرى سريعاً وشاحباً اطحن أدق، وإذا كان بطيئاً وداكناً اطحن أخشن.',
+  },
+  {
+    id:2, cat:'hot', name:'فلات وايت',
+    desc:'حليب مخملي الملمس يُصبّ على ريستريتو مركّز. توازن مثالي بين القهوة والحليب.',
+    prep:5, cal:130, servings:1,
+    image:'pictures/flat-white.png',
+    ingredients:[
+      {name:'إسبريسو دبل ريستريتو',qty:'30 مل'},
+      {name:'حليب كامل الدسم',qty:'150 مل'},
+    ],
+    steps:[
+      'اسحب دبل ريستريتو (18 جرام داخل، 30 مل خارج، 20-22 ثانية).',
+      'بخّر 150 مل حليب بارد إلى 60°م مع هواء خفيف — استهدف ملمساً مخملياً.',
+      'دوّر الإبريق لدمج الحليب واضرب الطاولة لإزالة الفقاعات.',
+      'اسكب الحليب من قريب، ابدأ من المركز ثم ارفع تدريجياً.',
+    ],
+    note:'الفرق الأساسي عن اللاتيه هو نسبة الحليب وقوام الفوم — هواء أقل يعني ملمساً أكثر حريرية.',
+  },
+  {
+    id:3, cat:'hot', name:'لاتيه القرفة والعسل',
+    desc:'لاتيه دافئ برائحة القرفة وحلاوة العسل الطبيعي.',
+    prep:6, cal:190, servings:1,
+    image:'https://image.pollinations.ai/prompt/Cinnamon%20honey%20latte%20in%20a%20ceramic%20mug%20warm%20lighting?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'إسبريسو دبل',qty:'60 مل'},
+      {name:'حليب مبخّر',qty:'220 مل'},
+      {name:'عسل',qty:'1.5 ملعقة صغيرة'},
+      {name:'قرفة مطحونة',qty:'¼ ملعقة صغيرة'},
+      {name:'خلاصة فانيلا',qty:'2 قطرات'},
+    ],
+    steps:[
+      'اسحب دبل إسبريسو في كوب مدفّأ سعة 350 مل.',
+      'اخلط العسل والفانيلا مع الإسبريسو الساخن.',
+      'بخّر الحليب إلى 65°م مع فوم ناعم.',
+      'اسكب الحليب على الإسبريسو بأسلوب فن اللاتيه.',
+      'رشّ القرفة فوقه بمنخل ناعم.',
+    ],
+    note:'استخدم عسلاً غامقاً كالحنطة السوداء أو المانوكا لنكهة أعمق وأغنى.',
+  },
+  {
+    id:4, cat:'hot', name:'موكا بالشوكولاتة الداكنة',
+    desc:'إسبريسو غني مع شوكولاتة داكنة وحليب مبخّر وقمة من كريمة الشانتيه.',
+    prep:6, cal:310, servings:1,
+    image:'Pictures/mocha.png',
+    ingredients:[
+      {name:'إسبريسو دبل',qty:'60 مل'},
+      {name:'صوص شوكولاتة داكنة',qty:'2 ملعقة كبيرة'},
+      {name:'حليب كامل الدسم',qty:'200 مل'},
+      {name:'كريمة مخفوقة',qty:'للتزيين'},
+      {name:'مسحوق كاكاو',qty:'للرش'},
+    ],
+    steps:[
+      'ضع صوص الشوكولاتة في قعر الكوب.',
+      'اسحب الإسبريسو فوق الشوكولاتة وحرّك.',
+      'بخّر الحليب إلى 65°م مع فوم ناعم.',
+      'اسكب الحليب على خليط القهوة والشوكولاتة.',
+      'أضف الكريمة المخفوقة وارشّ الكاكاو.',
+    ],
+    note:'سخّن الكوب أولاً وأضف قرصة من الملح للشوكولاتة — يُبرز النكهة بشكل ملحوظ.',
+  },
+  {
+    id:5, cat:'cold', name:'كولد برو',
+    desc:'قهوة مستخلصة ببطء على مدى 18 ساعة. ناعمة وحلوة بشكل طبيعي.',
+    prep:1080, cal:10, servings:4, wide:true,
+    image:'Pictures/cold brew.png',
+    ingredients:[
+      {name:'بن مطحون خشن',qty:'120 جرام'},
+      {name:'ماء بارد مفلتر',qty:'1 لتر'},
+      {name:'ثلج',qty:'للتقديم'},
+    ],
+    steps:[
+      'ضع 120 جراماً من البن الخشن في إبريق أو وعاء زجاجي كبير.',
+      'اسكب 1 لتر من الماء البارد على البن.',
+      'حرّك برفق للتأكد من تبلّل جميع الجزيئات.',
+      'غطّ الوعاء وضعه في الثلاجة لمدة 18-24 ساعة.',
+      'صفّ المزيج مرتين عبر منخل ناعم أو قماش تصفية.',
+      'قدّمه على الثلج، أو مخففاً 1:1 بالماء للحصول على مشروب خفيف.',
+    ],
+    note:'الكولد برو المركّز يبقى في الثلاجة حتى أسبوعين. تأكد دائماً من التصفية الجيدة لتجنب الترسبات.',
+  },
+  {
+    id:6, cat:'cold', name:'آيس لاتيه بالكراميل',
+    desc:'إسبريسو وحليب وثلج مع صوص الكراميل. منعش ومميز.',
+    prep:5, cal:280, servings:1,
+    image:'https://image.pollinations.ai/prompt/Iced%20caramel%20latte%20with%20drizzle%20and%20ice%20cubes%20tall%20glass?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'إسبريسو دبل',qty:'60 مل'},
+      {name:'حليب بارد',qty:'200 مل'},
+      {name:'صوص كراميل',qty:'2 ملعقة كبيرة'},
+      {name:'مكعبات ثلج',qty:'كوب كامل'},
+      {name:'كريمة مخفوقة',qty:'اختياري'},
+    ],
+    steps:[
+      'اسحب دبل إسبريسو واتركه يبرد قليلاً.',
+      'ضع ملعقة كراميل في قعر كوب طويل.',
+      'امله بمكعبات الثلج.',
+      'اسكب الحليب البارد على الثلج.',
+      'اسكب الإسبريسو ببطء على ظهر ملعقة لتكوين طبقة.',
+      'أضف بقية الكراميل والكريمة.',
+    ],
+    note:'ضع الكراميل على جدران الكوب من الداخل قبل الثلج للحصول على مظهر احترافي.',
+  },
+  {
+    id:7, cat:'cold', name:'ماتشا لاتيه بارد',
+    desc:'مسحوق ماتشا ياباني مع حليب اللوز وعسل الأغاف. أخضر، طبيعي، وممتاز.',
+    prep:5, cal:150, servings:1,
+    image:'https://image.pollinations.ai/prompt/Iced%20matcha%20latte%20with%20layers%20green%20and%20white%20in%20a%20glass?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'مسحوق ماتشا',qty:'2 ملعقة صغيرة'},
+      {name:'ماء دافئ',qty:'30 مل'},
+      {name:'حليب اللوز',qty:'250 مل'},
+      {name:'عسل الأغاف',qty:'1 ملعقة صغيرة'},
+      {name:'ثلج',qty:'للتقديم'},
+    ],
+    steps:[
+      'اخفق مسحوق الماتشا مع الماء الدافئ بمخفقة الباميل (Bamboo Whisk) حتى يذوب تماماً.',
+      'في كوب طويل، ضع الثلج والعسل.',
+      'اسكب حليب اللوز.',
+      'اسكب الماتشا ببطء فوق الحليب.',
+      'حرّك برفق للحصول على تأثير بصري جميل أو اخلطه كلياً.',
+    ],
+    note:'استخدم درجة ceremonial grade للماتشا للحصول على أفضل نكهة ولون أخضر زاهي.',
+  },
+  {
+    id:8, cat:'smoothie', name:'سموذي المانجو والكركم',
+    desc:'قوة طبيعية مضادة للالتهابات مع حلاوة المانجو الاستوائية ونكهة الزنجبيل.',
+    prep:5, cal:210, servings:1, wide:true,
+    image:'https://image.pollinations.ai/prompt/Yellow%20mango%20turmeric%20smoothie%20in%20a%20glass%20healthy%20vibrant?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'مانجو مجمّد',qty:'200 جرام'},
+      {name:'موز مجمّد',qty:'1 حبة'},
+      {name:'حليب جوز الهند',qty:'150 مل'},
+      {name:'كركم',qty:'½ ملعقة صغيرة'},
+      {name:'زنجبيل طازج',qty:'1 سم'},
+      {name:'فلفل أسود',qty:'قليل جداً'},
+      {name:'عسل',qty:'1 ملعقة صغيرة'},
+    ],
+    steps:[
+      'قشّر وقطّع الزنجبيل الطازج.',
+      'ضع جميع المكوّنات في خلاط قوي.',
+      'اخلط على سرعة عالية لمدة 60 ثانية.',
+      'اذوق وعدّل الحلاوة بالعسل.',
+      'اسكب في كوب مبرّد وزيّن بشريحة مانجو.',
+    ],
+    note:'الفلفل الأسود يُنشّط الكركمين في الكركم — لا تُهمله أبداً! استخدم الفاكهة المجمّدة للحصول على قوام أكثر سماكة.',
+  },
+  {
+    id:9, cat:'smoothie', name:'سموذي التوت المشكّل',
+    desc:'توت مشكّل مع زبادي يوناني وعسل. سميك وكريمي وغني بمضادات الأكسدة.',
+    prep:4, cal:240, servings:1,
+    image:'https://image.pollinations.ai/prompt/Mixed%20berry%20smoothie%20thick%20pink%20purple%20in%20a%20glass?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'توت مشكّل مجمّد',qty:'200 جرام'},
+      {name:'زبادي يوناني',qty:'120 مل'},
+      {name:'حليب اللوز',qty:'100 مل'},
+      {name:'عسل',qty:'1 ملعقة كبيرة'},
+      {name:'بذور شيا',qty:'1 ملعقة صغيرة'},
+      {name:'خلاصة فانيلا',qty:'½ ملعقة صغيرة'},
+    ],
+    steps:[
+      'أضف حليب اللوز والزبادي أولاً في الخلاط.',
+      'أضف التوت المجمّد والعسل والفانيلا والشيا.',
+      'اخلط حتى يصبح القوام ناعماً وكريمياً (45 ثانية).',
+      'إذا كان سميكاً جداً أضف رشّة من الحليب.',
+      'اسكب في كوب وزيّن ببضع حبات توت طازجة.',
+    ],
+    note:'لسموذي بقوام السلطة، قلّل الحليب للنصف وقدّمه مع الغرانولا.',
+  },
+  {
+    id:10, cat:'milkshake', name:'ميلك شيك الأوريو',
+    desc:'ميلك شيك سميك بنكهة كوكيز والكريم. كلاسيكي، غني، ومميز.',
+    prep:5, cal:550, servings:1, wide:true,
+    image:'Pictures/milkshik oreo.png',
+    ingredients:[
+      {name:'آيس كريم فانيلا',qty:'3 كرات (210 جرام)'},
+      {name:'حليب كامل',qty:'120 مل'},
+      {name:'بسكويت أوريو',qty:'8 حبات'},
+      {name:'كريمة مخفوقة',qty:'للتزيين'},
+      {name:'أوريو إضافي',qty:'للتزيين'},
+    ],
+    steps:[
+      'أضف الحليب والآيس كريم في الخلاط.',
+      'اكسر 6 حبات أوريو وأضفها.',
+      'اخلط حتى يصبح القوام ناعماً لكن سميكاً — لا تخلط كثيراً.',
+      'اسكب في كوب ميلك شيك مبرّد.',
+      'أضف الكريمة المخفوقة.',
+      'فتّت الأوريو المتبقية فوق الكريمة وأضف حبة كاملة للتزيين.',
+    ],
+    note:'جمّد الكوب لمدة 10 دقائق قبل التقديم للحصول على تجربة ترفيهية احترافية.',
+  },
+  {
+    id:11, cat:'milkshake', name:'ميلك شيك الكراميل المالح',
+    desc:'كراميل حلو موازن برشة ملح البحر. فاخر، سميك، ومُشبع تماماً.',
+    prep:5, cal:480, servings:1,
+    image:'Pictures/milkshik carmel salt.png',
+    ingredients:[
+      {name:'آيس كريم كراميل',qty:'3 كرات'},
+      {name:'حليب كامل',qty:'100 مل'},
+      {name:'صوص كراميل',qty:'3 ملاعق كبيرة'},
+      {name:'ملح البحر الخشن',qty:'½ ملعقة صغيرة'},
+      {name:'كريمة مخفوقة',qty:'للتزيين'},
+    ],
+    steps:[
+      'رشّ ملعقة كراميل على جدران الكوب من الداخل وجمّد لدقيقتين.',
+      'اخلط الآيس كريم والحليب وملعقتين كراميل وقليلاً من الملح.',
+      'اسكب في الكوب المُجهَّز.',
+      'أضف الكريمة المخفوقة وبقية الكراميل.',
+      'أنهِ برشّة سخية من ملح البحر فوق الكريمة.',
+    ],
+    note:'التناقض بين الحلو والمالح هو سرّ هذا الميلك شيك — لا تبخل على ملح البحر فوق الكريمة.',
+  },
+  {
+    id:12, cat:'juice', name:'عصير التخلص من السموم',
+    desc:'خيار وسبانخ وتفاح أخضر وليمون. منعش، حيوي، ومنشّط.',
+    prep:8, cal:95, servings:1,
+    image:'https://image.pollinations.ai/prompt/Green%20detox%20juice%20cucumber%20spinach%20apple%20in%20a%20glass?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'تفاح أخضر',qty:'2 حبة'},
+      {name:'خيار',qty:'1 كبير'},
+      {name:'سبانخ صغير',qty:'حفنتان'},
+      {name:'ليمون',qty:'1 حبة'},
+      {name:'زنجبيل طازج',qty:'2 سم'},
+      {name:'ماء بارد',qty:'50 مل'},
+    ],
+    steps:[
+      'اغسل جميع المكوّنات جيداً.',
+      'قطّع التفاح والخيار إلى قطع متوسطة.',
+      'قشّر الليمون والزنجبيل.',
+      'مرّر الجميع في العصّارة بالترتيب: الطري ثم الصلب.',
+      'حرّك جيداً وقدّم فوراً على الثلج.',
+    ],
+    note:'دائماً ضع الزنجبيل بين قطع التفاح في العصّارة لاستخراج أقصى كمية من العصير.',
+  },
+  {
+    id:13, cat:'juice', name:'عصير الشروق البرتقالي',
+    desc:'برتقال طازج مع جزر وزنجبيل. زاهي الألوان ومعزّز للمناعة.',
+    prep:6, cal:120, servings:1,
+    image:'https://image.pollinations.ai/prompt/Orange%20sunrise%20juice%20carrot%20ginger%20vibrant%20orange%20glass?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'برتقال كبير',qty:'4 حبات'},
+      {name:'جزر',qty:'2 حبة'},
+      {name:'زنجبيل طازج',qty:'1 سم'},
+      {name:'كركم طازج مبشور',qty:'½ ملعقة صغيرة'},
+    ],
+    steps:[
+      'قشّر البرتقال وفصّله إلى أجزاء.',
+      'قشّر الجزر وقطّعه خشناً.',
+      'اعصر الجزر والزنجبيل أولاً، ثم البرتقال.',
+      'أضف الكركم المبشور وحرّك.',
+      'قدّم فوراً على الثلج للحفاظ على فيتامين C.',
+    ],
+    note:'لفّ البرتقالة بقوة على الطاولة قبل العصر — يكسر الخلايا ويزيد كمية العصير بشكل ملحوظ.',
+  },
+  {
+    id:14, cat:'dessert', name:'وافل بلجيكي كلاسيك',
+    desc:'مقرمش من الخارج، طري كالغيمة من الداخل. الوافل الاحترافي بامتياز.',
+    prep:15, cal:420, servings:4, wide:true,
+    image:'Pictures/ChatGPT Image Mar 31, 2026, 10_22_04 AM.png',
+    ingredients:[
+      {name:'طحين أبيض',qty:'240 جرام'},
+      {name:'بيكنج باودر',qty:'1 ملعقة كبيرة'},
+      {name:'سكر',qty:'2 ملعقة كبيرة'},
+      {name:'ملح',qty:'½ ملعقة صغيرة'},
+      {name:'بيض (منفصل)',qty:'3 حبات كبيرة'},
+      {name:'حليب كامل',qty:'360 مل'},
+      {name:'زبدة مذابة',qty:'85 جرام'},
+      {name:'خلاصة فانيلا',qty:'1 ملعقة صغيرة'},
+    ],
+    steps:[
+      'في وعاء كبير، اخفق الطحين والبيكنج باودر والسكر والملح.',
+      'افصل البيض — الصفار في وعاء، البياض في آخر.',
+      'اخلط الصفار مع الحليب والزبدة المذابة والفانيلا.',
+      'أضف المكوّنات السائلة على الجافة وحرّك حتى تمتزج — الكتل مقبولة.',
+      'اخفق البياض مع رشة ملح حتى يتصلّب تماماً.',
+      'أضف البياض للعجينة بالتدريج في 3 مرات (لا تخلط بقوة).',
+      'سخّن جهاز الوافل وادهنه بالزبدة.',
+      'اسكب العجينة واطبخها 4-5 دقائق حتى تتحمّر .',
+      'قدّم فوراً مع الإضافات التي تريدها.',
+    ],
+    note:'سرّ الوافل المقرمش هو البياض المخفوق وعدم فتح الجهاز مبكراً! صبر الوقت الكامل.',
+  },
+  {
+    id:15, cat:'dessert', name:'وافل نوتيلا والفراولة',
+    desc:'وافل ذهبي مغطّى بالنوتيلا وفراولة طازجة وكريمة وبندق محمّص.',
+    prep:20, cal:680, servings:2,
+    image:'Pictures/ChatGPT Image Mar 31, 2026, 10_21_21 AM.png',
+    ingredients:[
+      {name:'عجينة وافل كلاسيك',qty:'1 دفعة'},
+      {name:'نوتيلا',qty:'4 ملاعق كبيرة'},
+      {name:'فراولة طازجة',qty:'200 جرام'},
+      {name:'كريمة مخفوقة',qty:'100 مل'},
+      {name:'بندق مطحون',qty:'2 ملعقة كبيرة'},
+      {name:'سكر بودرة',qty:'للرش'},
+    ],
+    steps:[
+      'حضّر عجينة الوافل الكلاسيكية واطبخ 2 وافل حتى يتذهّب.',
+      'بينما الوافل ساخن، ضع النوتيلا عليه وانشرها.',
+      'قطّع الفراولة وضعها فوق النوتيلا.',
+      'أضف كريمة مخفوقة بسخاء.',
+      'ارش البندق المطحون.',
+      'أنهِ بمسحوق السكر وقدّم فوراً.',
+    ],
+    note:'سخّن النوتيلا 10 ثوانٍ في الميكروويف قبل الاستخدام — تنتشر بسهولة وتذوب قليلاً في الوافل الساخن.',
+  },
+  {
+    id:16, cat:'dessert', name:'وافل القرفة والتفاح',
+    desc:'وافل دافئ مع تفاح مطهو بالقرفة والسكر البني وآيس كريم الفانيلا.',
+    prep:25, cal:590, servings:2,
+    image:'Pictures/ChatGPT Image Mar 31, 2026, 10_25_28 AM.png',
+    ingredients:[
+      {name:'عجينة وافل كلاسيك',qty:'1 دفعة'},
+      {name:'تفاح (مقشّر ومقطّع)',qty:'2 حبة'},
+      {name:'زبدة',qty:'20 جرام'},
+      {name:'سكر بني',qty:'2 ملعقة كبيرة'},
+      {name:'قرفة مطحونة',qty:'1 ملعقة صغيرة'},
+      {name:'آيس كريم فانيلا',qty:'2 كرة'},
+      {name:'عسل',qty:'للسكب'},
+    ],
+    steps:[
+      'في مقلاة، أذب الزبدة على نار متوسطة.',
+      'أضف التفاح والسكر البني والقرفة واطهُ لمدة 5 دقائق.',
+      'حضّر وافلين حتى يصبحا ذهبيين.',
+      'ضع التفاح المطهو فوق الوافل الساخن.',
+      'أضف كرة آيس كريم فانيلا.',
+      'أنهِ بخيط عسل وقدّم فوراً.',
+    ],
+    note:'اطهُ التفاح حتى يلين لكن ليس طرياً جداً — نريد قطعاً تحافظ على شكلها مع الوافل.',
+  },
+  {
+    id:17, cat:'milkshake', name:'ميلك شيك فانيلا كلاسيك',
+    desc:'ميلك شيك فانيلا غني وكريمي في كوب 400 مل. الكلاسيكية المثالية لكل الأوقات.',
+    prep:4, cal:410, servings:1, wide:true,
+    image:'https://image.pollinations.ai/prompt/Classic%20vanilla%20milkshake%20with%20whipped%20cream%20tall%20glass?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'آيس كريم فانيلا',qty:'200 جرام (3 كرات)'},
+      {name:'حليب كامل الدسم',qty:'150 مل'},
+      {name:'خلاصة فانيلا',qty:'½ ملعقة صغيرة'},
+      {name:'كريمة مخفوقة',qty:'للتزيين'},
+    ],
+    steps:[
+      'أضف الآيس كريم والحليب والفانيلا في الخلاط.',
+      'اخلط حتى يصبح المزيج ناعماً وكثيفاً.',
+      'اسكب الميلك شيك في كوب 400 مل مبرّد.',
+      'زيّن بالكريمة المخفوقة وقدّم فوراً.',
+    ],
+    note:'احرص على تبريد الكوب مسبقاً للحفاظ على القوام الكثيف.',
+  },
+  {
+    id:18, cat:'milkshake', name:'ميلك شيك شوكولاتة',
+    desc:'ميلك شيك الشوكولاتة الغني المزيّن بصوص الشوكولاتة. طعم دسم وعميق في كوب 400 مل.',
+    prep:5, cal:450, servings:1,
+    image:'Pictures/ChatGPT Image Mar 31, 2026, 10_14_19 AM.png',
+    ingredients:[
+      {name:'آيس كريم شوكولاتة',qty:'200 جرام (3 كرات)'},
+      {name:'حليب كامل الدسم',qty:'150 مل'},
+      {name:'صوص شوكولاتة',qty:'2 ملعقة كبيرة'},
+      {name:'كريمة مخفوقة',qty:'للتزيين'},
+    ],
+    steps:[
+      'زيّن جدران كوب 400 مل من الداخل بصوص الشوكولاتة.',
+      'اخلط الآيس كريم والحليب وملعقة من صوص الشوكولاتة.',
+      'اسكب المزيج في الكوب المجهّز.',
+      'أضف الكريمة المخفوقة وقليلاً من الكاكاو أو الصوص.',
+    ],
+    note:'استخدم آيس كريم شوكولاتة عالي الجودة لتعزيز النكهة.',
+  },
+  {
+    id:19, cat:'milkshake', name:'ميلك شيك الفراولة الطازجة',
+    desc:'ميلك شيك الفراولة اللذيذ مع قطع الفراولة الطازجة، يُقدّم في كوب 400 مل المنعش.',
+    prep:5, cal:390, servings:1,
+    image:'Pictures/ChatGPT Image Mar 31, 2026, 10_17_17 AM.png',
+    ingredients:[
+      {name:'آيس كريم فراولة',qty:'200 جرام (3 كرات)'},
+      {name:'حليب كامل الدسم',qty:'120 مل'},
+      {name:'فراولة طازجة أو مجمدة',qty:'50 جرام'},
+      {name:'كريمة مخفوقة',qty:'للتزيين'},
+    ],
+    steps:[
+      'قطّع الفراولة إلى قطع صغيرة وأضفها للخلاط.',
+      'أضف الآيس كريم والحليب واخلط جيداً.',
+      'اسكب في كوب 400 مل.',
+      'زيّن بالكريمة وحبة فراولة كاملة.',
+    ],
+    note:'تضيف الفراولة المجمدة قواماً أسمك وأكثر برودة.',
+  },
+  {
+    id:20, cat:'milkshake', name:'ميلك شيك الفستق (بيستاشيو)',
+    desc:'ميلك شيك الفستق الفاخر مع المكسرات ليعطيك قرمشة رائعة. كوب 400 مل.',
+    prep:6, cal:520, servings:1, wide:true,
+    image:'https://image.pollinations.ai/prompt/Pistachio%20green%20milkshake%20with%20crushed%20nuts%20on%20top%20tall%20glass%20creamy?width=600&height=600&nologo=true',
+    ingredients:[
+      {name:'آيس كريم فانيلا',qty:'200 جرام (3 كرات)'},
+      {name:'حليب كامل الدسم',qty:'150 مل'},
+      {name:'زبدة الفستق (بيستاشيو)',qty:'2 ملعقة كبيرة'},
+      {name:'فستق مطحون',qty:'للتزيين'},
+    ],
+    steps:[
+      'في الخلاط، ضع الآيس كريم، الحليب وزبدة الفستق.',
+      'اخلط المزيج حتى يمتزج ويأخذ اللون الأخضر الفاتح.',
+      'امسح القليل من زبدة الفستق على حافة الكوب 400 مل من الداخل.',
+      'اسكب الميلك شيك وزيّنه بالكريمة والفستق المطحون.',
+    ],
+    note:'استخدم زبدة فستق نقية إيطالية للحصول على نكهة احترافية خيالية.',
+  },
+  {
+    id:21, cat:'milkshake', name:'ميلك شيك اللوتس (بيسكوف)',
+    desc:'ميلك شيك زبدة اللوتس وبسكويت البيسكوف مع الكريمة المخفوقة. كوب 400 مل.',
+    prep:6, cal:560, servings:1,
+    image:'Pictures/ChatGPT Image Mar 31, 2026, 10_19_51 AM.png',
+    ingredients:[
+      {name:'آيس كريم فانيلا',qty:'200 جرام (3 كرات)'},
+      {name:'حليب كامل الدسم',qty:'150 مل'},
+      {name:'زبدة اللوتس',qty:'2 ملعقة كبيرة'},
+      {name:'بسكويت لوتس',qty:'2 حبة'},
+      {name:'كريمة مخفوقة',qty:'للتزيين'},
+    ],
+    steps:[
+      'اكسر حبة من بسكويت اللوتس في الخلاط.',
+      'أضف الآيس كريم والحليب وملعقة من زبدة اللوتس واخلط.',
+      'أذب الملعقة المتبقية من زبدة اللوتس وزيّن بها جدران الكوب.',
+      'اسكب الميلك شيك، زيّن بالكريمة وضع بسكويتة كاملة للأناقة.',
+    ],
+    note:'احرص ألا تخلط كثيراً حتى يبقى هنالك قطع صغيرة مقرمشة من البسكويت.',
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let storedState = JSON.parse(localStorage.getItem('baristaAR') || 'null');
+if(storedState && storedState.length < 21) {
+  // If we have old state without the new milkshakes, force reset
+  storedState = null;
+  localStorage.removeItem('baristaAR');
+}
+let recipes = storedState || DEFAULT;
+let activeCat = 'all';
+let currentId = null;
+let editingId = null;
+function persist(){ localStorage.setItem('baristaAR', JSON.stringify(recipes)); }
+
+// ═══════════════════════════════════════════════════════
+// RENDER TABS
+// ═══════════════════════════════════════════════════════
+function renderTabs(){
+  document.getElementById('catTabs').innerHTML = CATS.map(c => `
+    <button class="cat-btn ${activeCat===c.id?'active':''}" onclick="setCategory('${c.id}')">
+      ${c.emoji} ${c.label}
+    </button>`).join('');
+}
+function setCategory(id){ activeCat=id; renderTabs(); renderCards(); }
+
+// ═══════════════════════════════════════════════════════
+// BUILD GRADIENT CARD VISUAL
+// ═══════════════════════════════════════════════════════
+function buildVisual(cat, emoji, wide){
+  const c = CAT_MAP[cat];
+  return `
+    <div class="card-visual">
+      <div class="card-bg" style="background:linear-gradient(135deg,${c.grad[0]} 0%,${c.grad[1]} 100%)">
+        <div class="card-orb" style="background:${c.orb}"></div>
+        <span class="card-emoji">${emoji}</span>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER CARDS
+// ═══════════════════════════════════════════════════════
+const CAT_EMOJI = {
+  hot:'☕', cold:'🧊', smoothie:'🫐',
+  milkshake:'🥤', juice:'🍊', dessert:'🧇'
+};
+
+function renderCards(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let list = activeCat==='all' ? recipes : recipes.filter(r=>r.cat===activeCat);
+  if(q) list = list.filter(r=> r.name.toLowerCase().includes(q) || r.desc.toLowerCase().includes(q));
+
+  const cat = CAT_MAP[activeCat];
+  document.getElementById('secLabel').innerHTML =
+    `${cat.emoji} ${cat.label} <span class="count-pill">${list.length}</span>`;
+
+  const grid = document.getElementById('recipeGrid');
+  if(!list.length){
+    grid.innerHTML = `<div class="empty-state">
+      <div class="ei">☕</div>
+      <p>لا توجد وصفات بعد.<br>اضغط <strong>+</strong> لإضافة وصفة!</p>
+    </div>`; return;
+  }
+
+  grid.innerHTML = list.map((r, i)=>{
+    const c = CAT_MAP[r.cat];
+    const em = CAT_EMOJI[r.cat];
+    const isWide = r.wide && i===0;
+    const prepStr = r.prep<60 ? r.prep+'د' : Math.round(r.prep/60)+'س';
+    return `
+    <div class="recipe-card ${isWide?'wide':''}" onclick="openDetail(${r.id})">
+      <div class="card-visual">
+        <div class="card-bg" style="background:linear-gradient(135deg,${c.grad[0]} 0%,${c.grad[1]} 100%)">
+          <div class="card-orb" style="background:${c.orb}"></div>
+          ${r.image ? `<img src="${r.image}" class="card-img" alt="${r.name}" loading="lazy">` : `<span class="card-emoji" style="${isWide?'font-size:58px':''}">${em}</span>`}
+        </div>
+      </div>
+      <div class="card-info">
+        <span class="cat-pill pill-${r.cat}">${em} ${c.label}</span>
+        <div class="card-name">${r.name}</div>
+        <div class="card-meta">
+          <span>⏱ ${prepStr}</span>
+          <span>🔥 ${r.cal} سعرة</span>
+          <span>🍽 ${r.servings} حصة</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// DETAIL
+// ═══════════════════════════════════════════════════════
+function openDetail(id){
+  const r = recipes.find(x=>x.id===id);
+  if(!r) return;
+  currentId = id;
+  const c = CAT_MAP[r.cat];
+  const em = CAT_EMOJI[r.cat];
+
+  // hero bg
+  document.getElementById('dHeroBg').style.background =
+    `linear-gradient(135deg,${c.grad[0]} 0%,${c.grad[1]} 100%)`;
+  document.getElementById('dHeroEmoji').textContent = em;
+  
+  const heroImg = document.getElementById('dHeroImg');
+  if(r.image) {
+    heroImg.src = r.image;
+    heroImg.style.display = 'block';
+    document.getElementById('dHeroEmoji').style.display = 'none';
+  } else {
+    heroImg.style.display = 'none';
+    document.getElementById('dHeroEmoji').style.display = 'block';
+  }
+
+  // pill
+  const pill = document.getElementById('dCatPill');
+  pill.textContent = em+' '+c.label;
+  pill.className = `cat-pill pill-${r.cat}`;
+
+  document.getElementById('dTitle').textContent = r.name;
+  document.getElementById('dDesc').textContent = r.desc;
+
+  const prepStr = r.prep<60 ? r.prep+' دقيقة' : Math.round(r.prep/60)+' ساعة';
+  document.getElementById('dStats').innerHTML = `
+    <div class="stat-box"><span class="stat-val">${prepStr}</span><span class="stat-lbl">وقت التحضير</span></div>
+    <div class="stat-box"><span class="stat-val">${r.cal}</span><span class="stat-lbl">سعرة حرارية</span></div>
+    <div class="stat-box"><span class="stat-val">${r.servings}</span><span class="stat-lbl">حصة</span></div>`;
+
+  document.getElementById('dIngList').innerHTML =
+    r.ingredients.map(i=>`<li class="ing-item"><span class="ing-name">${i.name}</span><span class="ing-qty">${i.qty}</span></li>`).join('');
+
+  document.getElementById('dStepsList').innerHTML =
+    r.steps.map((s,i)=>`<li class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></li>`).join('');
+
+  const noteEl = document.getElementById('dNote');
+  if(r.note){ document.getElementById('dNoteText').textContent=r.note; noteEl.style.display='block'; }
+  else noteEl.style.display='none';
+
+  const dv = document.getElementById('detailView');
+  dv.classList.add('open');
+  dv.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+function closeDetail(){
+  document.getElementById('detailView').classList.remove('open');
+  document.body.style.overflow = '';
+  currentId = null;
+}
+
+// ═══════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════
+function openAdd(){
+  editingId=null;
+  document.getElementById('modalTitle').textContent='إضافة وصفة جديدة';
+  document.getElementById('btnDel').style.display='none';
+  clearForm();
+  addIngRow(); addIngRow();
+  addStepRow();
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function editCurrent(){
+  const r = recipes.find(x=>x.id===currentId);
+  if(!r) return;
+  editingId=r.id;
+  document.getElementById('modalTitle').textContent='تعديل الوصفة';
+  document.getElementById('btnDel').style.display='block';
+  clearForm();
+  document.getElementById('fName').value=r.name;
+  document.getElementById('fCat').value=r.cat;
+  document.getElementById('fDesc').value=r.desc;
+  document.getElementById('fPrep').value=r.prep;
+  document.getElementById('fCal').value=r.cal;
+  document.getElementById('fServ').value=r.servings;
+  document.getElementById('fNote').value=r.note||'';
+  r.ingredients.forEach(i=>addIngRow(i.name,i.qty));
+  r.steps.forEach(s=>addStepRow(s));
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function clearForm(){
+  ['fName','fDesc','fPrep','fCal','fServ','fNote'].forEach(id=>{
+    document.getElementById(id).value='';
+  });
+  document.getElementById('fCat').value='hot';
+  document.getElementById('ingList').innerHTML='';
+  document.getElementById('stepList').innerHTML='';
+}
+
+function addIngRow(name='',qty=''){
+  const row=document.createElement('div');
+  row.className='ing-row';
+  row.innerHTML=`
+    <input class="form-control" placeholder="اسم المكوّن" value="${name}">
+    <input class="form-control" placeholder="الكمية" style="max-width:95px" value="${qty}">
+    <button class="btn-rm" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('ingList').appendChild(row);
+}
+
+function addStepRow(text=''){
+  const n = document.getElementById('stepList').children.length+1;
+  const row=document.createElement('div');
+  row.className='step-row';
+  row.innerHTML=`
+    <div class="step-num-sm">${n}</div>
+    <textarea class="form-control" rows="2" placeholder="اشرح الخطوة ${n}…">${text}</textarea>
+    <button class="btn-rm" onclick="this.parentElement.remove()" style="margin-top:9px">×</button>`;
+  document.getElementById('stepList').appendChild(row);
+}
+
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+
+function saveRecipe(){
+  const name=document.getElementById('fName').value.trim();
+  if(!name){ toast('⚠️ أدخل اسم الوصفة'); return; }
+
+  const ingRows=[...document.getElementById('ingList').querySelectorAll('.ing-row')];
+  const ingredients=[];
+  ingRows.forEach(row=>{
+    const ins=row.querySelectorAll('input');
+    if(ins[0].value.trim()) ingredients.push({name:ins[0].value.trim(), qty:ins[1].value.trim()||'—'});
+  });
+  if(!ingredients.length){ toast('⚠️ أضف مكوّناً واحداً على الأقل'); return; }
+
+  const steps=[...document.getElementById('stepList').querySelectorAll('textarea')]
+    .map(t=>t.value.trim()).filter(Boolean);
+  if(!steps.length){ toast('⚠️ أضف خطوة واحدة على الأقل'); return; }
+
+  const recipe={
+    id: editingId||Date.now(),
+    cat: document.getElementById('fCat').value,
+    name,
+    desc: document.getElementById('fDesc').value.trim()||'وصفة لذيذة من البريستا.',
+    prep: parseInt(document.getElementById('fPrep').value)||5,
+    cal: parseInt(document.getElementById('fCal').value)||0,
+    servings: parseInt(document.getElementById('fServ').value)||1,
+    ingredients, steps,
+    note: document.getElementById('fNote').value.trim(),
+  };
+
+  if(editingId){
+    const idx=recipes.findIndex(r=>r.id===editingId);
+    recipes[idx]=recipe;
+    currentId=recipe.id;
+    toast('✅ تم تحديث الوصفة!');
+  } else {
+    recipes.push(recipe);
+    toast('✅ تمت إضافة الوصفة!');
+  }
+  persist(); closeModal(); renderCards();
+  if(editingId) setTimeout(()=>openDetail(recipe.id),150);
+}
+
+function deleteRecipe(){
+  if(!editingId) return;
+  if(!confirm('حذف هذه الوصفة نهائياً؟')) return;
+  recipes=recipes.filter(r=>r.id!==editingId);
+  persist(); closeModal(); closeDetail(); renderCards();
+  toast('🗑 تم حذف الوصفة');
+}
+
+// OVERLAY CLICK
+document.getElementById('modalOverlay').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+// TOAST
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// INIT
+renderTabs();
+renderCards();
+</script>
+</body>
+</html>
