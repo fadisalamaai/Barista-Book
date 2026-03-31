@@ -689,6 +689,11 @@
       <textarea class="form-control" id="fDesc" rows="2" placeholder="وصف مختصر..."></textarea>
     </div>
 
+    <div class="form-group">
+      <label class="form-label">صورة الوصفة (اختياري)</label>
+      <input class="form-control" id="fImage" type="file" accept="image/*">
+    </div>
+
     <div class="row2">
       <div class="form-group">
         <label class="form-label">وقت التحضير (دقيقة)</label>
@@ -1381,6 +1386,7 @@ function clearForm(){
     document.getElementById(id).value='';
   });
   document.getElementById('fCat').value='hot';
+  document.getElementById('fImage').value=''; // مسح حقل الصورة
   document.getElementById('ingList').innerHTML='';
   document.getElementById('stepList').innerHTML='';
 }
@@ -1424,29 +1430,46 @@ function saveRecipe(){
     .map(t=>t.value.trim()).filter(Boolean);
   if(!steps.length){ toast('⚠️ أضف خطوة واحدة على الأقل'); return; }
 
-  const recipe={
-    id: editingId||Date.now(),
-    cat: document.getElementById('fCat').value,
-    name,
-    desc: document.getElementById('fDesc').value.trim()||'وصفة لذيذة من البريستا.',
-    prep: parseInt(document.getElementById('fPrep').value)||5,
-    cal: parseInt(document.getElementById('fCal').value)||0,
-    servings: parseInt(document.getElementById('fServ').value)||1,
-    ingredients, steps,
-    note: document.getElementById('fNote').value.trim(),
+  const imageInput = document.getElementById('fImage');
+  const processImage = () => {
+    return new Promise((resolve) => {
+      if (imageInput.files[0]) {
+        const file = imageInput.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(file);
+      } else {
+        resolve('');
+      }
+    });
   };
 
-  if(editingId){
-    const idx=recipes.findIndex(r=>r.id===editingId);
-    recipes[idx]=recipe;
-    currentId=recipe.id;
-    toast('✅ تم تحديث الوصفة!');
-  } else {
-    recipes.push(recipe);
-    toast('✅ تمت إضافة الوصفة!');
-  }
-  persist(); closeModal(); renderCards();
-  if(editingId) setTimeout(()=>openDetail(recipe.id),150);
+  processImage().then(image => {
+    const recipe={
+      id: editingId||Date.now(),
+      cat: document.getElementById('fCat').value,
+      name,
+      desc: document.getElementById('fDesc').value.trim()||'وصفة لذيذة من البريستا.',
+      prep: parseInt(document.getElementById('fPrep').value)||5,
+      cal: parseInt(document.getElementById('fCal').value)||0,
+      servings: parseInt(document.getElementById('fServ').value)||1,
+      ingredients, steps,
+      note: document.getElementById('fNote').value.trim(),
+      image: image || undefined,
+    };
+
+    if(editingId){
+      const idx=recipes.findIndex(r=>r.id===editingId);
+      recipes[idx]=recipe;
+      currentId=recipe.id;
+      toast('✅ تم تحديث الوصفة!');
+    } else {
+      recipes.push(recipe);
+      toast('✅ تمت إضافة الوصفة!');
+    }
+    persist(); closeModal(); renderCards();
+    if(editingId) setTimeout(()=>openDetail(recipe.id),150);
+  });
 }
 
 function deleteRecipe(){
@@ -1474,5 +1497,11 @@ function toast(msg){
 renderTabs();
 renderCards();
 </script>
+
+<!-- Footer -->
+<footer style="text-align: center; padding: 20px; background: var(--surface); border-top: 1px solid var(--border); margin-top: 20px; font-size: 14px; color: var(--muted);">
+  تم إنشاء هذه الصفحة بواسطة: <strong style="color: var(--accent);">المهندس/ عمر سلامة</strong>
+</footer>
+
 </body>
 </html>
